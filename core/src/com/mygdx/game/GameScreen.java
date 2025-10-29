@@ -11,6 +11,7 @@ public class GameScreen extends Pantalla {
 
 	private Tarro tarro;
 	private Lluvia lluvia;
+    Texture fondo;
 
 	   
 	//boolean activo = true;
@@ -19,24 +20,27 @@ public class GameScreen extends Pantalla {
         super(game);
         batch = new SpriteBatch();
 
-		  // load the images for the droplet and the bucket, 64x64 pixels each 	     
-		  Sound hurtSound = Gdx.audio.newSound(Gdx.files.internal("hurt.ogg"));
-		  tarro = new Tarro(new Texture(Gdx.files.internal("bucket.png")),hurtSound);
-         
-	      // load the drop sound effect and the rain background "music" 
-         Texture gota = new Texture(Gdx.files.internal("drop.png"));
-         Texture gotaMala = new Texture(Gdx.files.internal("dropBad.png"));
-         
-         Sound dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.wav"));
-        
-	     Music rainMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
-         lluvia = new Lluvia(gota, gotaMala, dropSound, rainMusic);
+        // load the background image
+        fondo = new Texture(Gdx.files.internal("fondo.png"));
 
-	      // creacion del tarro
-	      tarro.crear();
-	      
-	      // creacion de la lluvia
-	      lluvia.crear();
+        // load the images for the droplet and the bucket, 64x64 pixels each
+        Sound hurtSound = Gdx.audio.newSound(Gdx.files.internal("hurt.ogg"));
+        tarro = new Tarro(new Texture(Gdx.files.internal("bucket.png")),hurtSound);
+
+        // load the drop sound effect and the rain background "music"
+        Texture gota = new Texture(Gdx.files.internal("drop.png"));
+        Texture gotaMala = new Texture(Gdx.files.internal("dropBad.png"));
+
+        Sound dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.wav"));
+
+        Music rainMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
+        lluvia = new Lluvia(gota, gotaMala, dropSound, rainMusic);
+
+        // creacion del tarro
+        tarro.crear();
+
+        // creacion de la lluvia
+        lluvia.crear();
 	}
 
 	@Override
@@ -48,6 +52,8 @@ public class GameScreen extends Pantalla {
 		//actualizar 
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
+        //dibujar fondo
+        batch.draw(fondo, 0, 0, 800, 480);
 		//dibujar textos
 		font.draw(batch, "Gotas totales: " + tarro.getPuntos(), 5, 475);
 		font.draw(batch, "Vidas : " + tarro.getVidas(), 670, 475);
@@ -89,7 +95,7 @@ public class GameScreen extends Pantalla {
 	public void dispose() {
       tarro.destruir();
       lluvia.destruir();
-
+      fondo.dispose();
 	}
 
 }
