@@ -1,20 +1,14 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 
-public class GameScreen implements Screen {
-	final GameLluviaMenu game;
-    private OrthographicCamera camera;
-	private SpriteBatch batch;	   
-	private BitmapFont font;
+public class GameScreen extends Pantalla {
+
 	private Tarro tarro;
 	private Lluvia lluvia;
 
@@ -22,9 +16,9 @@ public class GameScreen implements Screen {
 	//boolean activo = true;
 
 	public GameScreen(final GameLluviaMenu game) {
-		this.game = game;
-        this.batch = game.getBatch();
-        this.font = game.getFont();
+        super(game);
+        batch = new SpriteBatch();
+
 		  // load the images for the droplet and the bucket, 64x64 pixels each 	     
 		  Sound hurtSound = Gdx.audio.newSound(Gdx.files.internal("hurt.ogg"));
 		  tarro = new Tarro(new Texture(Gdx.files.internal("bucket.png")),hurtSound);
@@ -37,11 +31,7 @@ public class GameScreen implements Screen {
         
 	     Music rainMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
          lluvia = new Lluvia(gota, gotaMala, dropSound, rainMusic);
-	      
-	      // camera
-	      camera = new OrthographicCamera();
-	      camera.setToOrtho(false, 800, 480);
-	      batch = new SpriteBatch();
+
 	      // creacion del tarro
 	      tarro.crear();
 	      
@@ -84,29 +74,15 @@ public class GameScreen implements Screen {
 	}
 
 	@Override
-	public void resize(int width, int height) {
-	}
-
-	@Override
 	public void show() {
 	  // continuar con sonido de lluvia
 	  lluvia.continuar();
 	}
 
 	@Override
-	public void hide() {
-
-	}
-
-	@Override
 	public void pause() {
 		lluvia.pausar();
 		game.setScreen(new PausaScreen(game, this)); 
-	}
-
-	@Override
-	public void resume() {
-
 	}
 
 	@Override
