@@ -74,7 +74,7 @@ public class GameScreen extends Pantalla {
 		}
 		
 		tarro.dibujar(batch);
-		lluvia.actualizarDibujoLluvia(batch);
+		lluvia.dibujar(batch);
 		
 		batch.end();
 	}

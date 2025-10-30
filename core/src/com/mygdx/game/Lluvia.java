@@ -10,7 +10,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 
-public class Lluvia {
+public class Lluvia implements Dibujar{
 	private Array<Rectangle> rainDropsPos;
 	private Array<Integer> rainDropsType;
     private long lastDropTime;
@@ -81,18 +81,20 @@ public class Lluvia {
 	   } 
 	  return true; 
    }
-   
-   public void actualizarDibujoLluvia(SpriteBatch batch) { 
-	   
-	  for (int i=0; i < rainDropsPos.size; i++ ) {
-		  Rectangle raindrop = rainDropsPos.get(i);
-		  if(rainDropsType.get(i)==1) // gota dañina
-	         batch.draw(gotaMala, raindrop.x, raindrop.y); 
-		  else
-			 batch.draw(gotaBuena, raindrop.x, raindrop.y); 
-	   }
-   }
-   public void destruir() {
+
+    @Override
+    public void dibujar(SpriteBatch batch) {
+        for(int i = 0; i < rainDropsPos.size; i++)
+        {
+            Rectangle raindrop = rainDropsPos.get(i);
+            if(rainDropsType.get(i) == 1)
+                batch.draw(gotaMala, raindrop.x, raindrop.y);
+            else
+                batch.draw(gotaBuena, raindrop.x, raindrop.y);
+        }
+    }
+
+    public void destruir() {
       dropSound.dispose();
       rainMusic.dispose();
    }
