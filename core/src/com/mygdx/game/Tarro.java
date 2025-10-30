@@ -10,78 +10,103 @@ import com.badlogic.gdx.math.Rectangle;
 
 
 public class Tarro implements Dibujar{
-	   private Rectangle bucket;
-	   private Texture bucketImage;
-	   private Sound sonidoHerido;
-	   private int vidas = 3;
-	   private int puntos = 0;
-	   private int velx = 400;
-	   private boolean herido = false;
-	   private int tiempoHeridoMax=50;
-	   private int tiempoHerido;
-	   
-	   
-	   public Tarro(Texture tex, Sound ss) {
+    private Rectangle bucket;
+    private Texture bucketImage;
+    private Sound sonidoHerido;
+    private Sound sonidoCurar;
+    private int vidas = 3;
+    private int puntos = 0;
+    private int velx = 400;
+    private boolean herido = false;
+    private int tiempoHeridoMax=50;
+    private int tiempoHerido;
+    private boolean curado = false;
+    private int tiempoCuradoMax = 50;
+    private int tiempoCurado;
+
+
+
+    public Tarro(Texture tex, Sound ss, Sound hh) {
 		   bucketImage = tex;
 		   sonidoHerido = ss;
+           sonidoCurar = hh;
 	   }
-	   
-		public int getVidas() {
+    public int getVidas() {
 			return vidas;
 		}
-	
-		public int getPuntos() {
-			return puntos;
-		}
-		public Rectangle getArea() {
-			return bucket;
-		}
-		public void sumarPuntos(int pp) {
-			puntos+=pp;
-		}
-		
-	
-	   public void crear() {
-		      bucket = new Rectangle();
-		      bucket.x = 800 / 2 - 64 / 2;
-		      bucket.y = 20;
-		      bucket.width = 64;
-		      bucket.height = 64;
-	   }
-	   public void dañar() {
-		  vidas--;
-		  herido = true;
-		  tiempoHerido=tiempoHeridoMax;
-		  sonidoHerido.play();
-	   }
-	   public void dibujar(SpriteBatch batch) {
-		 if (!herido)  
-		   batch.draw(bucketImage, bucket.x, bucket.y);
-		 else {
-		
-		   batch.draw(bucketImage, bucket.x, bucket.y+ MathUtils.random(-5,5));
-		   tiempoHerido--;
-		   if (tiempoHerido<=0) herido = false;
-		 }
-	   } 
-	   
-	   
-	   public void actualizarMovimiento() { 
-		   // movimiento desde mouse/touch
-		   /*if(Gdx.input.isTouched()) {
-			      Vector3 touchPos = new Vector3();
-			      touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-			      camera.unproject(touchPos);
-			      bucket.x = touchPos.x - 64 / 2;
-			}*/
-		   //movimiento desde teclado
-		   if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) bucket.x -= velx * Gdx.graphics.getDeltaTime();
-		   if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) bucket.x += velx * Gdx.graphics.getDeltaTime();
-		   // que no se salga de los bordes izq y der
-		   if(bucket.x < 0) bucket.x = 0;
-		   if(bucket.x > 800 - 64) bucket.x = 800 - 64;
-	   }
-	    
+
+    public int getPuntos() {
+        return puntos;
+    }
+    public Rectangle getArea() {
+        return bucket;
+    }
+    public void sumarPuntos(int pp) {
+        puntos+=pp;
+    }
+
+
+   public void crear() {
+          bucket = new Rectangle();
+          bucket.x = 800 / 2 - 64 / 2;
+          bucket.y = 20;
+          bucket.width = 64;
+          bucket.height = 64;
+   }
+
+   public void dañar() {
+      vidas--;
+      herido = true;
+      tiempoHerido=tiempoHeridoMax;
+      sonidoHerido.play();
+   }
+
+   public void dibujar(SpriteBatch batch) {
+       if (curado) { //Se encarga de dar efecto y de bajar el cooldown de curado.
+           batch.setColor(0.5f, 1f, 0.5f, 1f); // lo ponemos de color verde claro
+           batch.draw(bucketImage, bucket.x, bucket.y);
+           batch.setColor(1f, 1f, 1f, 1f); // restaurar color normal
+           tiempoCurado--;
+           if (tiempoCurado <= 0) curado = false;
+       }
+
+       else if (herido) {//efecto cuando recibe daño. Reduce cooldown de daño
+           batch.setColor(1f, 0.3f, 0.3f, 1f); // ponemos color rojo claro
+           batch.draw(bucketImage, bucket.x, bucket.y + MathUtils.random(-5, 5));
+           batch.setColor(1f, 1f, 1f, 1f); // restaurar color original
+           tiempoHerido--;
+           if (tiempoHerido <= 0) herido = false;
+       }
+
+       else { //Sin recibir daño ni curacion
+           batch.draw(bucketImage, bucket.x, bucket.y);
+       }
+   }
+
+   public void curar() {
+       if (vidas < 3){
+           vidas++;
+           curado = true;
+           tiempoCurado = tiempoCuradoMax;
+           sonidoCurar.play();
+       }
+   }
+
+   public void actualizarMovimiento() {
+       // movimiento desde mouse/touch
+       /*if(Gdx.input.isTouched()) {
+              Vector3 touchPos = new Vector3();
+              touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+              camera.unproject(touchPos);
+              bucket.x = touchPos.x - 64 / 2;
+        }*/
+       //movimiento desde teclado
+       if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) bucket.x -= velx * Gdx.graphics.getDeltaTime();
+       if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) bucket.x += velx * Gdx.graphics.getDeltaTime();
+       // que no se salga de los bordes izq y der
+       if(bucket.x < 0) bucket.x = 0;
+       if(bucket.x > 800 - 64) bucket.x = 800 - 64;
+   }
 
 	public void destruir() {
 		    bucketImage.dispose();

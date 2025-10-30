@@ -11,44 +11,57 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 
 public class Lluvia implements Dibujar{
-	private Array<Rectangle> rainDropsPos;
-	private Array<Integer> rainDropsType;
+	private Array<Rectangle> posElementos;
+	private Array<Integer> tipoElementos;
     private long lastDropTime;
-    private Texture gotaBuena;
-    private Texture gotaMala;
-    private Sound dropSound;
-    private Music rainMusic;
-	   
-	public Lluvia(Texture gotaBuena, Texture gotaMala, Sound ss, Music mm) {
-		rainMusic = mm;
-		dropSound = ss;
-		this.gotaBuena = gotaBuena;
-		this.gotaMala = gotaMala;
+    private Texture manzana;
+    private Texture pieManzana;
+    private Texture abuela;
+    private Texture lobo;
+    private Sound sonidoManzana;
+    private Sound sonidoPie;
+    private Music musicaFondo;
+
+    //manzana, pieManzana, abuela, lobo, sonidoManzana, sonidoPie, musicaFondo
+	public Lluvia(Texture manzana, Texture pieManzana, Texture abuela, Texture lobo, Sound sonidoManzana, Sound sonidoPie, Music mm) {
+		musicaFondo = mm;
+		this.sonidoManzana = sonidoManzana;
+        this.sonidoPie = sonidoPie;
+		this.manzana = manzana;
+        this.abuela = abuela;
+        this.pieManzana = pieManzana;
+		this.lobo = lobo;
 	}
 	
 	public void crear() {
-		rainDropsPos = new Array<Rectangle>();
-		rainDropsType = new Array<Integer>();
+		posElementos = new Array<Rectangle>();
+		tipoElementos = new Array<Integer>();
 		crearGotaDeLluvia();
 	      // start the playback of the background music immediately
-	      rainMusic.setLooping(true);
-	      rainMusic.play();
+	      musicaFondo.setLooping(true);
+	      musicaFondo.play();
 	}
 	
 	private void crearGotaDeLluvia() {
-	      Rectangle raindrop = new Rectangle();
-	      raindrop.x = MathUtils.random(0, 800-64);
-	      raindrop.y = 480;
-	      raindrop.width = 64;
-	      raindrop.height = 64;
-	      rainDropsPos.add(raindrop);
-	      // ver el tipo de gota
-	      if (MathUtils.random(1,10)<5)	    	  
-	         rainDropsType.add(1);
-	      else 
-	    	 rainDropsType.add(2);
-	      lastDropTime = TimeUtils.nanoTime();
-	   }
+        Rectangle raindrop = new Rectangle();
+        raindrop.x = MathUtils.random(0, 800-64);
+        raindrop.y = 480;
+        raindrop.width = 64;
+        raindrop.height = 64;
+        posElementos.add(raindrop);
+        // ver el tipo de elemento
+        int p = MathUtils.random(1,100);
+        if (p<=25)
+            tipoElementos.add(1);
+        else if(p<=75)
+            tipoElementos.add(2);
+        else if(p<=90)
+            tipoElementos.add(3);
+        else
+            tipoElementos.add(4);
+
+        lastDropTime = TimeUtils.nanoTime();
+    }
 	
    public boolean actualizarMovimiento(Tarro tarro) { 
 	   // generar gotas de lluvia 
@@ -56,27 +69,42 @@ public class Lluvia implements Dibujar{
 	  
 	   
 	   // revisar si las gotas cayeron al suelo o chocaron con el tarro
-	   for (int i=0; i < rainDropsPos.size; i++ ) {
-		  Rectangle raindrop = rainDropsPos.get(i);
+	   for (int i = 0; i < posElementos.size; i++ ) {
+		  Rectangle raindrop = posElementos.get(i);
 	      raindrop.y -= 300 * Gdx.graphics.getDeltaTime();
 	      //cae al suelo y se elimina
 	      if(raindrop.y + 64 < 0) {
-	    	  rainDropsPos.removeIndex(i); 
-	    	  rainDropsType.removeIndex(i);
+	    	  posElementos.removeIndex(i);
+	    	  tipoElementos.removeIndex(i);
 	      }
 	      if(raindrop.overlaps(tarro.getArea())) { //la gota choca con el tarro
-	    	if(rainDropsType.get(i)==1) { // gota dañina
+	    	if(tipoElementos.get(i)==1) { // gota dañina
 	    	  tarro.dañar();
 	    	  if (tarro.getVidas()<=0)
 	    		 return false; // si se queda sin vidas retorna falso /game over
-	    	  rainDropsPos.removeIndex(i);
-	          rainDropsType.removeIndex(i);
-	      	}else { // gota a recolectar
-	    	  tarro.sumarPuntos(10);
-	          dropSound.play();
-	          rainDropsPos.removeIndex(i);
-	          rainDropsType.removeIndex(i);
+	    	  posElementos.removeIndex(i);
+	          tipoElementos.removeIndex(i);
 	      	}
+
+            else if(tipoElementos.get(i)==2){ // manzana a recolectar
+	    	  tarro.sumarPuntos(10);
+	          sonidoManzana.play();
+	          posElementos.removeIndex(i);
+	          tipoElementos.removeIndex(i);
+	      	}
+
+            else if(tipoElementos.get(i)==3){ //pie a recolectar
+                tarro.sumarPuntos(25);
+                sonidoPie.play();
+                posElementos.removeIndex(i);
+                tipoElementos.removeIndex(i);
+            }
+
+            else if(tipoElementos.get(i)==4){ //abuela
+                tarro.curar();
+                posElementos.removeIndex(i);
+                tipoElementos.removeIndex(i);
+            }
 	      }
 	   } 
 	  return true; 
@@ -84,25 +112,29 @@ public class Lluvia implements Dibujar{
 
     @Override
     public void dibujar(SpriteBatch batch) {
-        for(int i = 0; i < rainDropsPos.size; i++)
+        for(int i = 0; i < posElementos.size; i++)
         {
-            Rectangle raindrop = rainDropsPos.get(i);
-            if(rainDropsType.get(i) == 1)
-                batch.draw(gotaMala, raindrop.x, raindrop.y);
-            else
-                batch.draw(gotaBuena, raindrop.x, raindrop.y);
+            Rectangle raindrop = posElementos.get(i);
+            if(tipoElementos.get(i) == 1)
+                batch.draw(lobo, raindrop.x, raindrop.y);
+            else if(tipoElementos.get(i) == 2)
+                batch.draw(manzana, raindrop.x, raindrop.y);
+            else if(tipoElementos.get(i) == 3)
+                batch.draw(pieManzana, raindrop.x, raindrop.y);
+            else if(tipoElementos.get(i) == 4)
+                batch.draw(abuela, raindrop.x, raindrop.y);
         }
     }
-
     public void destruir() {
-      dropSound.dispose();
-      rainMusic.dispose();
+      sonidoManzana.dispose();
+      musicaFondo.dispose();
+      sonidoPie.dispose();
    }
-   public void pausar() {
-	  rainMusic.stop();
+    public void pausar() {
+	  musicaFondo.stop();
    }
-   public void continuar() {
-	  rainMusic.play();
+    public void continuar() {
+	  musicaFondo.play();
    }
    
 }

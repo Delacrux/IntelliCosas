@@ -20,21 +20,31 @@ public class GameScreen extends Pantalla {
         super(game);
         batch = new SpriteBatch();
 
-        // load the background image
+        // cargamos la imagen de fondo
         fondo = new Texture(Gdx.files.internal("fondo.png"));
 
-        // load the images for the droplet and the bucket, 64x64 pixels each
-        Sound hurtSound = Gdx.audio.newSound(Gdx.files.internal("hurt.ogg"));
-        tarro = new Tarro(new Texture(Gdx.files.internal("canasto.png")),hurtSound);
+        // cargamos la imagen y sonido de la manzana (64x64, mp3)
+        Texture manzana = new Texture(Gdx.files.internal("manzana.png"));
+        Sound sonidoManzana = Gdx.audio.newSound(Gdx.files.internal("atrapar.mp3"));
 
-        // load the drop sound effect and the rain background "music"
-        Texture gota = new Texture(Gdx.files.internal("manzana.png"));
-        Texture gotaMala = new Texture(Gdx.files.internal("lobo.png"));
+        // cargamos la imagen y sonido de la abuela (64x64, mp3)
+        Texture pieManzana = new Texture(Gdx.files.internal("piemanzana.png"));
+        Sound sonidoPie = Gdx.audio.newSound(Gdx.files.internal("comer.mp3"));
 
-        Sound dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.wav"));
+        // cargamos la imagen y sonido de la abuela (64x64, mp3)
+        Texture abuela = new Texture(Gdx.files.internal("awela.png"));
+        Sound sonidoAbuela = Gdx.audio.newSound(Gdx.files.internal("healing.mp3"));
 
-        Music rainMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
-        lluvia = new Lluvia(gota, gotaMala, dropSound, rainMusic);
+        // cargamos la imagen y sonido del lobo (64x64, mp3)
+        Texture lobo = new Texture(Gdx.files.internal("lobo.png"));
+        Sound sonidoLobo = Gdx.audio.newSound(Gdx.files.internal("danio.mp3"));
+
+        // cargamos imagen de la canasta (64x64)
+        tarro = new Tarro(new Texture(Gdx.files.internal("canasto.png")),sonidoLobo, sonidoAbuela);
+
+        // cargamos la musica de fondo (mp3)
+        Music musicaFondo = Gdx.audio.newMusic(Gdx.files.internal("musicaFondo.mp3"));
+        lluvia = new Lluvia(manzana, pieManzana, abuela, lobo, sonidoManzana, sonidoPie, musicaFondo);
 
         // creacion del tarro
         tarro.crear();
