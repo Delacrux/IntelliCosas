@@ -9,14 +9,14 @@ import com.badlogic.gdx.utils.ScreenUtils;
 
 public class GameScreen extends Pantalla {
 
-	private Tarro tarro;
-	private Lluvia lluvia;
+	private Cesta cesta;
+	private Controlador controlador;
     Texture fondo;
 
 	   
 	//boolean activo = true;
 
-	public GameScreen(final GameLluviaMenu game) {
+	public GameScreen(final GameMenu game) {
         super(game);
         batch = new SpriteBatch();
 
@@ -40,17 +40,17 @@ public class GameScreen extends Pantalla {
         Sound sonidoLobo = Gdx.audio.newSound(Gdx.files.internal("danio.mp3"));
 
         // cargamos imagen de la canasta (64x64)
-        tarro = new Tarro(new Texture(Gdx.files.internal("canasto.png")),sonidoLobo, sonidoAbuela);
+        cesta = new Cesta(new Texture(Gdx.files.internal("canasto.png")),sonidoLobo, sonidoAbuela);
 
         // cargamos la musica de fondo (mp3)
         Music musicaFondo = Gdx.audio.newMusic(Gdx.files.internal("musicaFondo.mp3"));
-        lluvia = new Lluvia(manzana, pieManzana, abuela, lobo, sonidoManzana, sonidoPie, musicaFondo);
+        controlador = new Controlador(manzana, pieManzana, abuela, lobo, sonidoManzana, sonidoPie, musicaFondo);
 
         // creacion del tarro
-        tarro.crear();
+        cesta.crear();
 
         // creacion de la lluvia
-        lluvia.crear();
+        controlador.crear();
 	}
 
 	@Override
@@ -65,26 +65,26 @@ public class GameScreen extends Pantalla {
         //dibujar fondo
         batch.draw(fondo, 0, 0, 800, 480);
 		//dibujar textos
-		font.draw(batch, "Gotas totales: " + tarro.getPuntos(), 5, 475);
-		font.draw(batch, "Vidas : " + tarro.getVidas(), 670, 475);
+		font.draw(batch, "Gotas totales: " + cesta.getPuntos(), 5, 475);
+		font.draw(batch, "Vidas : " + cesta.getVidas(), 670, 475);
 		font.draw(batch, "HighScore : " + game.getHigherScore(), camera.viewportWidth/2-50, 475);
 		
-		if (!tarro.estaHerido()) {
+		if (!cesta.estaHerido()) {
 			// movimiento del tarro desde teclado
-	        tarro.actualizarMovimiento();        
+	        cesta.actualizarMovimiento();
 			// caida de la lluvia 
-	       if (!lluvia.actualizarMovimiento(tarro)) {
+	       if (!controlador.actualizarMovimiento(cesta)) {
 	    	  //actualizar HigherScore
-	    	  if (game.getHigherScore()<tarro.getPuntos())
-	    		  game.setHigherScore(tarro.getPuntos());  
+	    	  if (game.getHigherScore()< cesta.getPuntos())
+	    		  game.setHigherScore(cesta.getPuntos());
 	    	  //ir a la ventana de finde juego y destruir la actual
 	    	  game.setScreen(new GameOverScreen(game));
 	    	  dispose();
 	       }
 		}
 		
-		tarro.dibujar(batch);
-		lluvia.dibujar(batch);
+		cesta.dibujar(batch);
+		controlador.dibujar(batch);
 		
 		batch.end();
 	}
@@ -92,19 +92,19 @@ public class GameScreen extends Pantalla {
 	@Override
 	public void show() {
 	  // continuar con sonido de lluvia
-	  lluvia.continuar();
+	  controlador.continuar();
 	}
 
 	@Override
 	public void pause() {
-		lluvia.pausar();
+		controlador.pausar();
 		game.setScreen(new PausaScreen(game, this)); 
 	}
 
 	@Override
 	public void dispose() {
-      tarro.destruir();
-      lluvia.destruir();
+      cesta.destruir();
+      controlador.destruir();
       fondo.dispose();
 	}
 

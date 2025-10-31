@@ -9,7 +9,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 
 
-public class Tarro implements Dibujar{
+public class Cesta implements Dibujar{
     private Rectangle bucket;
     private Texture bucketImage;
     private Sound sonidoHerido;
@@ -26,7 +26,7 @@ public class Tarro implements Dibujar{
 
 
 
-    public Tarro(Texture tex, Sound ss, Sound hh) {
+    public Cesta(Texture tex, Sound ss, Sound hh) {
 		   bucketImage = tex;
 		   sonidoHerido = ss;
            sonidoCurar = hh;

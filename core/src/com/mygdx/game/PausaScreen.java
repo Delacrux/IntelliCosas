@@ -8,7 +8,7 @@ public class PausaScreen extends Pantalla {
 
 	private GameScreen juego;
 
-	public PausaScreen (final GameLluviaMenu game, GameScreen juego) {
+	public PausaScreen (final GameMenu game, GameScreen juego) {
 		super(game);
         this.juego = juego;
 	}

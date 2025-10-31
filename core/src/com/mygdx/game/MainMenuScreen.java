@@ -1,13 +1,17 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 
 public class MainMenuScreen extends Pantalla {
 
-	public MainMenuScreen(final GameLluviaMenu game) {
+    private Texture fondoMenu;
+	public MainMenuScreen(final GameMenu game) {
+
         super(game);
+        fondoMenu = new Texture(Gdx.files.internal("fondoiniciofin.jpeg"));
 	}
 
 	@Override
@@ -18,9 +22,10 @@ public class MainMenuScreen extends Pantalla {
 		batch.setProjectionMatrix(camera.combined);
 
 		batch.begin();
+        batch.draw(fondoMenu,0,0,800,480);
 		font.getData().setScale(2, 2);
-		font.draw(batch, "Bienvenido a Recolecta Gotas!!! ", 100, camera.viewportHeight/2+50);
-		font.draw(batch, "Toca en cualquier lugar para comenzar!", 100, camera.viewportHeight/2-50);
+		font.draw(batch, "Bienvenido a ¡Atrapa, Caperucita!", 180, camera.viewportHeight/2+50);
+		font.draw(batch, "Toca en cualquier lugar para comenzar!", 150, camera.viewportHeight/2-50);
 
 		batch.end();
 

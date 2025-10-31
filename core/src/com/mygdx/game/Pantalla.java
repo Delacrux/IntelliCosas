@@ -8,12 +8,12 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public abstract class Pantalla implements Screen {
-    protected final GameLluviaMenu game;
+    protected final GameMenu game;
     protected SpriteBatch batch;
     protected BitmapFont font;
     protected OrthographicCamera camera;
 
-    public Pantalla(final GameLluviaMenu game){
+    public Pantalla(final GameMenu game){
         this.game = game;
         this.batch = game.getBatch();
         this.font = game.getFont();

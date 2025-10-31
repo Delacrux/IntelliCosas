@@ -10,7 +10,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 
-public class Lluvia implements Dibujar{
+public class Controlador implements Dibujar{
 	private Array<Rectangle> posElementos;
 	private Array<Integer> tipoElementos;
     private long lastDropTime;
@@ -23,7 +23,7 @@ public class Lluvia implements Dibujar{
     private Music musicaFondo;
 
     //manzana, pieManzana, abuela, lobo, sonidoManzana, sonidoPie, musicaFondo
-	public Lluvia(Texture manzana, Texture pieManzana, Texture abuela, Texture lobo, Sound sonidoManzana, Sound sonidoPie, Music mm) {
+	public Controlador(Texture manzana, Texture pieManzana, Texture abuela, Texture lobo, Sound sonidoManzana, Sound sonidoPie, Music mm) {
 		musicaFondo = mm;
 		this.sonidoManzana = sonidoManzana;
         this.sonidoPie = sonidoPie;
@@ -63,7 +63,7 @@ public class Lluvia implements Dibujar{
         lastDropTime = TimeUtils.nanoTime();
     }
 	
-   public boolean actualizarMovimiento(Tarro tarro) { 
+   public boolean actualizarMovimiento(Cesta cesta) {
 	   // generar gotas de lluvia 
 	   if(TimeUtils.nanoTime() - lastDropTime > 100000000) crearGotaDeLluvia();
 	  
@@ -77,31 +77,31 @@ public class Lluvia implements Dibujar{
 	    	  posElementos.removeIndex(i);
 	    	  tipoElementos.removeIndex(i);
 	      }
-	      if(raindrop.overlaps(tarro.getArea())) { //la gota choca con el tarro
+	      if(raindrop.overlaps(cesta.getArea())) { //la gota choca con el tarro
 	    	if(tipoElementos.get(i)==1) { // gota dañina
-	    	  tarro.dañar();
-	    	  if (tarro.getVidas()<=0)
+	    	  cesta.dañar();
+	    	  if (cesta.getVidas()<=0)
 	    		 return false; // si se queda sin vidas retorna falso /game over
 	    	  posElementos.removeIndex(i);
 	          tipoElementos.removeIndex(i);
 	      	}
 
             else if(tipoElementos.get(i)==2){ // manzana a recolectar
-	    	  tarro.sumarPuntos(10);
+	    	  cesta.sumarPuntos(10);
 	          sonidoManzana.play();
 	          posElementos.removeIndex(i);
 	          tipoElementos.removeIndex(i);
 	      	}
 
             else if(tipoElementos.get(i)==3){ //pie a recolectar
-                tarro.sumarPuntos(25);
+                cesta.sumarPuntos(25);
                 sonidoPie.play();
                 posElementos.removeIndex(i);
                 tipoElementos.removeIndex(i);
             }
 
             else if(tipoElementos.get(i)==4){ //abuela
-                tarro.curar();
+                cesta.curar();
                 posElementos.removeIndex(i);
                 tipoElementos.removeIndex(i);
             }

@@ -1,12 +1,16 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class GameOverScreen extends Pantalla {
 
-	public GameOverScreen(final GameLluviaMenu game) {
+    private Texture fondoGameOver;
+	public GameOverScreen(final GameMenu game) {
+
         super(game);
+        fondoGameOver = new Texture(Gdx.files.internal("fondoiniciofin.jpeg"));
 	}
 
 	@Override
@@ -16,8 +20,10 @@ public class GameOverScreen extends Pantalla {
 		batch.setProjectionMatrix(camera.combined);
 
 		batch.begin();
-		font.draw(batch, "GAME OVER ", 100, 200);
-		font.draw(batch, "Toca en cualquier lado para reiniciar.", 100, 100);
+        batch.draw(fondoGameOver, 0 , 0, 800, 480);
+
+		font.draw(batch, "GAME OVER ", 290, 300);
+		font.draw(batch, "Toca en cualquier lado para reiniciar.", 150, 240);
 		batch.end();
 
 		if (Gdx.input.isTouched()) {
