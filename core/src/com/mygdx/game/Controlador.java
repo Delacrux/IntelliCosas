@@ -13,7 +13,7 @@ import com.badlogic.gdx.utils.TimeUtils;
 public class Controlador implements Dibujar{
 	private Array<Rectangle> posElementos;
 	private Array<Integer> tipoElementos;
-    private long lastDropTime;
+    private long ultimaCreacion;
     private Texture manzana;
     private Texture pieManzana;
     private Texture abuela;
@@ -43,12 +43,12 @@ public class Controlador implements Dibujar{
 	}
 	
 	private void crearGotaDeLluvia() {
-        Rectangle raindrop = new Rectangle();
-        raindrop.x = MathUtils.random(0, 800-64);
-        raindrop.y = 480;
-        raindrop.width = 64;
-        raindrop.height = 64;
-        posElementos.add(raindrop);
+        Rectangle elemento = new Rectangle();
+        elemento.x = MathUtils.random(0, 800-64);
+        elemento.y = 480;
+        elemento.width = 64;
+        elemento.height = 64;
+        posElementos.add(elemento);
         // ver el tipo de elemento
         int p = MathUtils.random(1,100);
         if (p<=25)
@@ -60,25 +60,25 @@ public class Controlador implements Dibujar{
         else
             tipoElementos.add(4);
 
-        lastDropTime = TimeUtils.nanoTime();
+        ultimaCreacion = TimeUtils.nanoTime();
     }
 	
    public boolean actualizarMovimiento(Cesta cesta) {
-	   // generar gotas de lluvia 
-	   if(TimeUtils.nanoTime() - lastDropTime > 100000000) crearGotaDeLluvia();
+	   // generar elementos
+	   if(TimeUtils.nanoTime() - ultimaCreacion > 100000000) crearGotaDeLluvia();
 	  
 	   
-	   // revisar si las gotas cayeron al suelo o chocaron con el tarro
+	   // revisar si los elementos cayeron al suelo
 	   for (int i = 0; i < posElementos.size; i++ ) {
-		  Rectangle raindrop = posElementos.get(i);
-	      raindrop.y -= 300 * Gdx.graphics.getDeltaTime();
+		  Rectangle elemento = posElementos.get(i);
+	      elemento.y -= 300 * Gdx.graphics.getDeltaTime();
 	      //cae al suelo y se elimina
-	      if(raindrop.y + 64 < 0) {
+	      if(elemento.y + 64 < 0) {
 	    	  posElementos.removeIndex(i);
 	    	  tipoElementos.removeIndex(i);
 	      }
-	      if(raindrop.overlaps(cesta.getArea())) { //la gota choca con el tarro
-	    	if(tipoElementos.get(i)==1) { // gota dañina
+	      if(elemento.overlaps(cesta.getArea())) { // elemento choca con el tarro
+	    	if(tipoElementos.get(i)==1) { // es lobo (hace daño)
 	    	  cesta.dañar();
 	    	  if (cesta.getVidas()<=0)
 	    		 return false; // si se queda sin vidas retorna falso /game over
@@ -114,15 +114,15 @@ public class Controlador implements Dibujar{
     public void dibujar(SpriteBatch batch) {
         for(int i = 0; i < posElementos.size; i++)
         {
-            Rectangle raindrop = posElementos.get(i);
+            Rectangle elemento = posElementos.get(i);
             if(tipoElementos.get(i) == 1)
-                batch.draw(lobo, raindrop.x, raindrop.y);
+                batch.draw(lobo, elemento.x, elemento.y);
             else if(tipoElementos.get(i) == 2)
-                batch.draw(manzana, raindrop.x, raindrop.y);
+                batch.draw(manzana, elemento.x, elemento.y);
             else if(tipoElementos.get(i) == 3)
-                batch.draw(pieManzana, raindrop.x, raindrop.y);
+                batch.draw(pieManzana, elemento.x, elemento.y);
             else if(tipoElementos.get(i) == 4)
-                batch.draw(abuela, raindrop.x, raindrop.y);
+                batch.draw(abuela, elemento.x, elemento.y);
         }
     }
     public void destruir() {
