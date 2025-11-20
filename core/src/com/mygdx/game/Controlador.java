@@ -10,23 +10,27 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 
+import java.util.HashMap;
+
 public class Controlador implements Dibujar{
 	private Array<Rectangle> posElementos;
 	private Array<Integer> tipoElementos;
+    private HashMap<Integer, EstrategiaColision> estrategias;
     private long ultimaCreacion;
     private Texture manzana;
     private Texture pieManzana;
     private Texture abuela;
     private Texture lobo;
-    private Sound sonidoManzana;
-    private Sound sonidoPie;
     private Music musicaFondo;
 
     //manzana, pieManzana, abuela, lobo, sonidoManzana, sonidoPie, musicaFondo
-	public Controlador(Texture manzana, Texture pieManzana, Texture abuela, Texture lobo, Sound sonidoManzana, Sound sonidoPie, Music mm) {
+	public Controlador(Texture manzana, Texture pieManzana, Texture abuela, Texture lobo, Music mm) {
 		musicaFondo = mm;
-		this.sonidoManzana = sonidoManzana;
-        this.sonidoPie = sonidoPie;
+        estrategias = new HashMap<>();
+        estrategias.put(1, new ColisionLobo());
+        estrategias.put(2, new ColisionManzana());
+        estrategias.put(3, new ColisionPie());
+        estrategias.put(4, new ColisionAbuela());
 		this.manzana = manzana;
         this.abuela = abuela;
         this.pieManzana = pieManzana;
@@ -78,33 +82,16 @@ public class Controlador implements Dibujar{
 	    	  tipoElementos.removeIndex(i);
 	      }
 	      if(elemento.overlaps(cesta.getArea())) { // elemento choca con el tarro
-	    	if(tipoElementos.get(i)==1) { // es lobo (hace daño)
-	    	  cesta.dañar();
-	    	  if (cesta.getVidas()<=0)
-	    		 return false; // si se queda sin vidas retorna falso /game over
-	    	  posElementos.removeIndex(i);
-	          tipoElementos.removeIndex(i);
-	      	}
-
-            else if(tipoElementos.get(i)==2){ // manzana a recolectar
-	    	  cesta.sumarPuntos(10);
-	          sonidoManzana.play();
-	          posElementos.removeIndex(i);
-	          tipoElementos.removeIndex(i);
-	      	}
-
-            else if(tipoElementos.get(i)==3){ //pie a recolectar
-                cesta.sumarPuntos(25);
-                sonidoPie.play();
-                posElementos.removeIndex(i);
-                tipoElementos.removeIndex(i);
-            }
-
-            else if(tipoElementos.get(i)==4){ //abuela
-                cesta.curar();
-                posElementos.removeIndex(i);
-                tipoElementos.removeIndex(i);
-            }
+              int tipo = tipoElementos.get(i);
+              EstrategiaColision strat =  estrategias.get(tipo);
+              if(strat != null) {
+                  strat.colision(cesta);
+                  if(tipo==1 && cesta.getVidas()<=0) {
+                      return false; // si se queda sin vidas retorna falso /game over
+                  }
+              }
+              posElementos.removeIndex(i);
+              tipoElementos.removeIndex(i);
 	      }
 	   } 
 	  return true; 
@@ -126,9 +113,7 @@ public class Controlador implements Dibujar{
         }
     }
     public void destruir() {
-      sonidoManzana.dispose();
       musicaFondo.dispose();
-      sonidoPie.dispose();
    }
     public void pausar() {
 	  musicaFondo.stop();

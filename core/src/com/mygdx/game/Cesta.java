@@ -14,6 +14,8 @@ public class Cesta implements Dibujar{
     private Texture bucketImage;
     private Sound sonidoHerido;
     private Sound sonidoCurar;
+    private Sound sonidoManzana;
+    private Sound sonidoPie;
     private int vidas = 3;
     private int puntos = 0;
     private int velx = 400;
@@ -26,11 +28,14 @@ public class Cesta implements Dibujar{
 
 
 
-    public Cesta(Texture tex, Sound ss, Sound hh) {
+    public Cesta(Texture tex, Sound sH, Sound sC, Sound sM, Sound sP) {
 		   bucketImage = tex;
-		   sonidoHerido = ss;
-           sonidoCurar = hh;
+		   sonidoHerido = sH;
+           sonidoCurar = sC;
+           sonidoManzana = sM;
+           sonidoPie = sP;
 	   }
+
     public int getVidas() {
 			return vidas;
 		}
@@ -42,6 +47,12 @@ public class Cesta implements Dibujar{
         return bucket;
     }
     public void sumarPuntos(int pp) {
+        if(pp==10){
+            sonidoManzana.play();
+        }
+        else{
+            sonidoPie.play();
+        }
         puntos+=pp;
     }
 

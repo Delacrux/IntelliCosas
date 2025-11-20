@@ -40,11 +40,11 @@ public class GameScreen extends Pantalla {
         Sound sonidoLobo = Gdx.audio.newSound(Gdx.files.internal("danio.mp3"));
 
         // cargamos imagen de la canasta (64x64)
-        cesta = new Cesta(new Texture(Gdx.files.internal("canasto.png")),sonidoLobo, sonidoAbuela);
+        cesta = new Cesta(new Texture(Gdx.files.internal("canasto.png")),sonidoLobo, sonidoAbuela, sonidoManzana, sonidoPie);
 
         // cargamos la musica de fondo (mp3)
         Music musicaFondo = Gdx.audio.newMusic(Gdx.files.internal("musicaFondo.mp3"));
-        controlador = new Controlador(manzana, pieManzana, abuela, lobo, sonidoManzana, sonidoPie, musicaFondo);
+        controlador = new Controlador(manzana, pieManzana, abuela, lobo, musicaFondo);
 
         // creacion del tarro
         cesta.crear();
