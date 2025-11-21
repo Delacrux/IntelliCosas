@@ -6,6 +6,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.ScreenUtils;
 
 public abstract class Pantalla implements Screen {
     protected final GameMenu game;
@@ -22,16 +23,38 @@ public abstract class Pantalla implements Screen {
     }
 
     @Override
+    public final void render(float delta) {
+        limpiarPantalla();
+        actualizarCamara();
+        batch.setProjectionMatrix(camera.combined);
+        batch.begin();
+        dibujarContenido(delta);
+        batch.end();
+        manejarInput();
+    }
+
+    protected void limpiarPantalla() {
+        ScreenUtils.clear(0, 0, 0.2f, 1);
+    }
+
+    protected void actualizarCamara() {
+        camera.update();
+    }
+
+    protected abstract void dibujarContenido(float delta);
+
+    protected void manejarInput() {
+        //Algunas clases tendrán esto, otras no lo necesitarán (por eso no lo dejamos abstract)
+    }
+
+
+
+    @Override
     public void show (){
 
     }
 
-    /** Called when the screen should render itself.
-     * @param delta The time in seconds since the last render. */
-    @Override
-    public abstract void render (float delta); //Metodos a utilizar jijija
 
-    /** @see ApplicationListener#resize(int, int) */
     @Override
     public void resize (int width, int height){
 

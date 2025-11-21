@@ -1,10 +1,11 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.ScreenUtils;
 
 public class GameScreen extends Pantalla {
 
@@ -52,43 +53,38 @@ public class GameScreen extends Pantalla {
         controlador.crear();
 	}
 
-	@Override
-	public void render(float delta) {
-		//limpia la pantalla con color azul obscuro.
-		ScreenUtils.clear(0, 0, 0.2f, 1);
-		//actualizar matrices de la cámara
-		camera.update();
-		//actualizar 
-		batch.setProjectionMatrix(camera.combined);
-		batch.begin();
-        //dibujar fondo
+    @Override
+    protected void dibujarContenido(float delta) {
         batch.draw(fondo, 0, 0, 800, 480);
-		//dibujar textos
-		font.draw(batch, "Gotas totales: " + cesta.getPuntos(), 5, 475);
-		font.draw(batch, "Vidas : " + cesta.getVidas(), 670, 475);
-		font.draw(batch, "HighScore : " + game.getHigherScore(), camera.viewportWidth/2-50, 475);
-		
-		if (!cesta.estaHerido()) {
-			// movimiento del tarro desde teclado
-	        cesta.actualizarMovimiento();
-			// caida de la lluvia 
-	       if (!controlador.actualizarMovimiento(cesta)) {
-	    	  //actualizar HigherScore
-	    	  if (game.getHigherScore()< cesta.getPuntos())
-	    		  game.setHigherScore(cesta.getPuntos());
-	    	  //ir a la ventana de finde juego y destruir la actual
-	    	  game.setScreen(new GameOverScreen(game));
-	    	  dispose();
-	       }
-		}
-		
-		cesta.dibujar(batch);
-		controlador.dibujar(batch);
-		
-		batch.end();
-	}
+        font.draw(batch, "Gotas totales: " + cesta.getPuntos(), 5, 475);
+        font.draw(batch, "Vidas : " + cesta.getVidas(), 670, 475);
+        font.draw(batch, "HighScore : " + game.getHigherScore(), camera.viewportWidth/2-50, 475);
 
-	@Override
+        if (!cesta.estaHerido()) {
+            cesta.actualizarMovimiento();
+            if (!controlador.actualizarMovimiento(cesta)) {
+                if (game.getHigherScore() < cesta.getPuntos())
+                    game.setHigherScore(cesta.getPuntos());
+                game.setScreen(new GameOverScreen(game));
+                dispose();
+                return;
+            }
+        }
+
+        cesta.dibujar(batch);
+        controlador.dibujar(batch);
+    }
+
+
+    @Override
+    protected void manejarInput() {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            controlador.pausar();
+            game.setScreen(new PausaScreen(game, this));
+        }
+    }
+
+    @Override
 	public void show() {
 	  // continuar con sonido de lluvia
 	  controlador.continuar();
