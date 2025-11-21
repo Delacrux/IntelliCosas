@@ -113,7 +113,7 @@ public class Controlador implements Dibujar{
         }
     }
     public void destruir() {
-      musicaFondo.dispose();
+      musicaFondo.stop();
    }
     public void pausar() {
 	  musicaFondo.stop();
