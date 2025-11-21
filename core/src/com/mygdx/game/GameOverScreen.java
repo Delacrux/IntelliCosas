@@ -10,7 +10,7 @@ public class GameOverScreen extends Pantalla {
 	public GameOverScreen(final GameMenu game) {
 
         super(game);
-        fondoGameOver = new Texture(Gdx.files.internal("fondoiniciofin.jpeg"));
+        fondoGameOver = Recursos.getInstancia().getFondoGameOver();
 	}
 
 	@Override

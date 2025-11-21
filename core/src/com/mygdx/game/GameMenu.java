@@ -12,7 +12,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 		public void create() {
 			batch = new SpriteBatch();
-			font = new BitmapFont(); // use libGDX's default Arial font
+			font = Recursos.getInstancia().getFuente(); // use libGDX's default Arial font
 			this.setScreen(new MainMenuScreen(this));
 		}
 
@@ -21,8 +21,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 		}
 
 		public void dispose() {
-			batch.dispose();
-			font.dispose();
+            batch.dispose();
+            Recursos.getInstancia().dispose();
 		}
 
 		public SpriteBatch getBatch() {
@@ -40,6 +40,5 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 		public void setHigherScore(int higherScore) {
 			this.higherScore = higherScore;
 		}
-		
 
 	}

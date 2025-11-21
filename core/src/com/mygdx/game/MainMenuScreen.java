@@ -11,7 +11,7 @@ public class MainMenuScreen extends Pantalla {
 	public MainMenuScreen(final GameMenu game) {
 
         super(game);
-        fondoMenu = new Texture(Gdx.files.internal("fondoiniciofin.jpeg"));
+        fondoMenu = Recursos.getInstancia().getFondoMenu();
 	}
 
 	@Override

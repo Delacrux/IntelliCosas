@@ -119,9 +119,8 @@ public class Cesta implements Dibujar{
        if(bucket.x > 800 - 64) bucket.x = 800 - 64;
    }
 
-	public void destruir() {
-		    bucketImage.dispose();
-	   }
+   public void destruir() {
+   }
 	
    public boolean estaHerido() {
 	   return herido;

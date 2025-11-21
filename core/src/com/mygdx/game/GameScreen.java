@@ -1,6 +1,5 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
@@ -21,29 +20,29 @@ public class GameScreen extends Pantalla {
         batch = new SpriteBatch();
 
         // cargamos la imagen de fondo
-        fondo = new Texture(Gdx.files.internal("fondo.png"));
+        fondo = Recursos.getInstancia().getFondoJuego();
 
         // cargamos la imagen y sonido de la manzana (64x64, mp3)
-        Texture manzana = new Texture(Gdx.files.internal("manzana.png"));
-        Sound sonidoManzana = Gdx.audio.newSound(Gdx.files.internal("atrapar.mp3"));
+        Texture manzana = Recursos.getInstancia().getManzana();
+        Sound sonidoManzana = Recursos.getInstancia().getSonidoManzana();
 
         // cargamos la imagen y sonido de la abuela (64x64, mp3)
-        Texture pieManzana = new Texture(Gdx.files.internal("piemanzana.png"));
-        Sound sonidoPie = Gdx.audio.newSound(Gdx.files.internal("comer.mp3"));
+        Texture pieManzana = Recursos.getInstancia().getPieManzana();
+        Sound sonidoPie = Recursos.getInstancia().getSonidoPie();
 
         // cargamos la imagen y sonido de la abuela (64x64, mp3)
-        Texture abuela = new Texture(Gdx.files.internal("awela.png"));
-        Sound sonidoAbuela = Gdx.audio.newSound(Gdx.files.internal("healing.mp3"));
+        Texture abuela = Recursos.getInstancia().getAbuela();
+        Sound sonidoAbuela = Recursos.getInstancia().getSonidoAbuela();
 
         // cargamos la imagen y sonido del lobo (64x64, mp3)
-        Texture lobo = new Texture(Gdx.files.internal("lobo.png"));
-        Sound sonidoLobo = Gdx.audio.newSound(Gdx.files.internal("danio.mp3"));
+        Texture lobo = Recursos.getInstancia().getLobo();
+        Sound sonidoLobo = Recursos.getInstancia().getSonidoLobo();
 
         // cargamos imagen de la canasta (64x64)
-        cesta = new Cesta(new Texture(Gdx.files.internal("canasto.png")),sonidoLobo, sonidoAbuela, sonidoManzana, sonidoPie);
+        cesta = new Cesta(Recursos.getInstancia().getCesta(), sonidoLobo, sonidoAbuela, sonidoManzana, sonidoPie);
 
         // cargamos la musica de fondo (mp3)
-        Music musicaFondo = Gdx.audio.newMusic(Gdx.files.internal("musicaFondo.mp3"));
+        Music musicaFondo = Recursos.getInstancia().getMusicaFondo();
         controlador = new Controlador(manzana, pieManzana, abuela, lobo, musicaFondo);
 
         // creacion del tarro
@@ -105,7 +104,6 @@ public class GameScreen extends Pantalla {
 	public void dispose() {
       cesta.destruir();
       controlador.destruir();
-      fondo.dispose();
 	}
 
 }
